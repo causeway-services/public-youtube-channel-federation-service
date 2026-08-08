@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import test from "node:test";
 
-const EMSWEB = resolve(import.meta.dirname, "../..");
+const EMSWEB = "/home/emsenn/info/lib/emsenn/services/561-group/services/public-services-section/services/personal-services-section/emsenn-services-section/services/emsenn-web-services-section/services";
 const UNITS = [
   ["mathematics-youtube-channel-enterprise", "emsweb-mathematics-portfolio-status.service"],
   ["youtube-channel-enterprise", "emsweb-emsenn0-portfolio-status.service"],
