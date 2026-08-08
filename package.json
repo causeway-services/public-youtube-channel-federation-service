@@ -1,0 +1,35 @@
+{
+  "name": "@emsweb/emsweb-video-federation",
+  "version": "0.1.2",
+  "private": true,
+  "type": "module",
+  "description": "Non-central five-channel covenant, authenticated portfolio snapshots, weekday-aware deficit reports, and channel-addressed procurement opportunities.",
+  "scripts": {
+    "check": "for file in src/*.mjs test/*.test.mjs; do node --check \"$file\" || exit; done",
+    "health": "node src/channel-status-health.mjs",
+    "observe-public-identities": "node src/public-feed-health.mjs",
+    "snapshot": "node src/daily-snapshot.mjs",
+    "test": "node --test test/*.test.mjs",
+    "verify": "npm run check && npm test"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "dependencies": {
+    "@red-cup-engineering/a2a-agent-card-discovery-service": "1.0.1",
+    "@red-cup-engineering/a2a-agent-card-key-service": "1.0.1",
+    "@red-cup-engineering/a2a-channel-portfolio-status-service": "1.0.1",
+    "@red-cup-engineering/a2a-contracted-agent-service": "2.0.5",
+    "@red-cup-engineering/a2a-rmn-part-service": "1.0.1",
+    "@red-cup-engineering/a2a-rmn-task-client-service": "1.1.1",
+    "@red-cup-engineering/semantic-content-identify-service": "0.2.2",
+    "@red-cup-engineering/witness-journal-rdf-projection-service": "1.1.0",
+    "@red-cup-engineering/youtube-public-channel-feed-observation-cell": "0.1.1"
+  },
+  "keywords": [
+    "sovereign-state-enterprise",
+    "federation",
+    "portfolio"
+  ],
+  "license": "UNLICENSED"
+}

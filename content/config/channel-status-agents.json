@@ -1,0 +1,14 @@
+{
+  "type": "FiveChannelStatusAgentRegistry",
+  "version": 1,
+  "transport": "A2A-1.0-canonical-RMN-CBOR",
+  "scope": "loopback-same-machine",
+  "descriptors": [
+    { "channel": "urn:ame:mathematics-youtube-channel-enterprise", "agentUrl": "http://127.0.0.1:18432/.well-known/agent-card.json", "expectedAgentCardIdentity": "ni:///sha-256;wrfhBAz2hCeO46lb0Moernd8jhkZ-hdEX3Oq02MHABg" },
+    { "channel": "urn:ame:youtube-channel-enterprise", "agentUrl": "http://127.0.0.1:18431/.well-known/agent-card.json", "expectedAgentCardIdentity": "ni:///sha-256;LqhCRrulH1lVUqd2HxOhzGCWopQ_RiKh4jH8aYat9y0" },
+    { "channel": "urn:ame:climate-youtube-channel-enterprise", "agentUrl": "http://127.0.0.1:18433/.well-known/agent-card.json", "expectedAgentCardIdentity": "ni:///sha-256;LTMXaTC-3W75uElzp8Srzv-hq157skeElrBqK6s2aJY" },
+    { "channel": "urn:ame:artificial-intelligence-youtube-channel-enterprise", "agentUrl": "http://127.0.0.1:18434/.well-known/agent-card.json", "expectedAgentCardIdentity": "ni:///sha-256;sEiIThPwxkjIxecsjLwbwpRB4x4mSydJvZXxfmbdHw8" },
+    { "channel": "urn:ame:modern-business-youtube-channel-enterprise", "agentUrl": "http://127.0.0.1:18435/.well-known/agent-card.json", "expectedAgentCardIdentity": "ni:///sha-256;-I2oEhw2EaHyi3VoF88O9SfjrELmxqukPj3Jtx3U9PE" }
+  ],
+  "authorityWithheld": ["channel-credentials", "channel-write", "generation-dispatch", "scheduling", "publication", "settlement"]
+}

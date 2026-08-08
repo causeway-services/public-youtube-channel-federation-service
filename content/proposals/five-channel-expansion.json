@@ -1,0 +1,155 @@
+{
+  "type": "FiveChannelPortfolioExpansionProposal",
+  "version": 1,
+  "status": "proposed-reference-superseded-by-separate-admitted-activation",
+  "timezone": "America/Chicago",
+  "portfolio": [
+    {
+      "channel": "urn:ame:mathematics-youtube-channel-enterprise",
+      "line": "mathematics",
+      "format": "cinematic",
+      "weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "targetPerEligibleDay": 1,
+      "publicIdentityStatus": "bound"
+    },
+    {
+      "channel": "urn:ame:youtube-channel-enterprise",
+      "line": "relational-systems",
+      "format": "explainer",
+      "weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "targetPerEligibleDay": 1,
+      "publicIdentityStatus": "bound"
+    },
+    {
+      "channel": "urn:ame:climate-youtube-channel-enterprise",
+      "line": "climate-localities",
+      "format": "explainer",
+      "weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "targetPerEligibleDay": 1,
+      "publicIdentityStatus": "bound"
+    },
+    {
+      "channel": "urn:ame:artificial-intelligence-youtube-channel-enterprise",
+      "line": "artificial-intelligence-history-and-frontiers",
+      "format": "explainer",
+      "weekdays": ["Monday", "Wednesday", "Friday"],
+      "targetPerEligibleDay": 1,
+      "publicIdentityStatus": "bound",
+      "title": "Machine Learning: History & Frontiers",
+      "youtubeHandle": "@MachineLearningHistoryFrontier",
+      "youtubeChannelId": "UCZY23kFU8ddtPn8mnY9xGaw",
+      "oauthIdentityStatus": "verified-2026-07-21",
+      "curriculum": "urn:ame:artificial-intelligence-curriculum-enterprise",
+      "persistentNotebook": {
+        "actor": "urn:ame:artificial-intelligence-persistent-notebook-enterprise",
+        "notebookId": "9c3eed44-7fa3-4203-8b79-e0a20b91017f"
+      }
+    },
+    {
+      "channel": "urn:ame:modern-business-youtube-channel-enterprise",
+      "line": "modern-business-practice",
+      "format": "explainer",
+      "weekdays": ["Tuesday", "Thursday", "Saturday"],
+      "targetPerEligibleDay": 1,
+      "publicIdentityStatus": "bound",
+      "title": "Modern Business Practices",
+      "youtubeHandle": "@ModernBusinessPractices",
+      "youtubeChannelId": "UC79JnGCE1tfUZm2qQwSrleQ",
+      "oauthIdentityStatus": "verified-2026-07-21",
+      "curriculum": "urn:ame:modern-business-curriculum-enterprise",
+      "persistentNotebook": {
+        "actor": "urn:ame:modern-business-persistent-notebook-enterprise",
+        "notebookId": "763fbe07-e786-4e23-9b33-b53f05230573"
+      }
+    }
+  ],
+  "capacity": {
+    "source": "https://support.google.com/notebooklm/answer/16213268?hl=en",
+    "tierAssumption": "Higher Level Access; must be confirmed in the potential account UI before activation",
+    "reportedVideoOverviewsPerDay": 20,
+    "reportedCinematicSubLimitPerDay": 2,
+    "accountingRule": "Conservatively count every cinematic inside the total Video Overview allowance.",
+    "existingDailyTotal": 3,
+    "newMaximumOnAnyDay": 1,
+    "mondayThroughSaturdayTotal": 4,
+    "sundayTotal": 3,
+    "weeklyTotal": 27,
+    "weeklyCinematic": 7,
+    "minimumDailyHeadroom": 16
+  },
+  "researchEconomy": {
+    "principle": "Research is purchased once as an owner-authored product and may cross another settlement only by explicit sale or license; there is no ambient Union research pool.",
+    "requiredProductFields": [
+      "researchProductId",
+      "owner",
+      "questionOrDecision",
+      "sourceCorpusDigest",
+      "findingsAndUncertainty",
+      "observedThrough",
+      "freshnessOrExpiry",
+      "correctionIdentity",
+      "privacyAndJurisdiction",
+      "reuseGrant",
+      "priceAndSettlementReceipt"
+    ],
+    "flow": [
+      "A news, operational, curriculum, analytics, or audience touchpoint induces a buyer-owned question or opportunity.",
+      "The buyer procures one bounded research product from a sovereign research shop and pays once for that product.",
+      "The product owner may sell exact reuse grants to a curriculum enterprise, Koios, an operating service, or another research team without rerunning the research.",
+      "A curriculum enterprise admits only the lesson-relevant product and owns prerequisite, competency, and correction placement—not the underlying research truth.",
+      "A persistent-notebook enterprise admits an exact licensed carrier into its own source corpus and buys one explainer transformation.",
+      "The channel buys the admitted lesson artifact, adds channel-owned framing and disclosure, then owns publication and audience effects.",
+      "Analytics observations are sold to an internal analytics broker; interpretations remain separately attributed research products and never rewrite source evidence."
+    ]
+  },
+  "notebookTopology": {
+    "rule": "Each new curriculum line receives a distinct persistent-notebook settlement and exact notebook identity to contain source limits, context contamination, corrections, and provider failure.",
+    "sharedFaculty": "All notebook settlements may independently hire urn:ame:notebooklm-inference-team under exact customer grants; they do not share credentials or source-state authority.",
+    "bound": [
+      "AI/ML notebook 9c3eed44-7fa3-4203-8b79-e0a20b91017f",
+      "modern-business notebook 763fbe07-e786-4e23-9b33-b53f05230573"
+    ],
+    "pending": ["provider standing grants extended to those two exact customers"]
+  },
+  "curriculumSeeds": {
+    "artificialIntelligence": {
+      "firstCourse": "History and Frontiers of Machine Learning",
+      "lessons": [
+        "Cybernetics, computation, and symbolic AI",
+        "Probability, statistics, and statistical learning",
+        "Neural networks, backpropagation, and representation learning",
+        "Attention, transformers, scaling, and foundation models",
+        "Reinforcement learning, planning, and decision systems",
+        "Evaluation, generalization, robustness, and distribution shift",
+        "Interpretability, alignment, safety, and security",
+        "Frontiers: multimodality, agents, world models, compute, and data"
+      ]
+    },
+    "modernBusiness": {
+      "firstCourse": "The Modern Firm as an Operational System",
+      "lessons": [
+        "Value propositions, business models, and institutional purpose",
+        "Customer discovery, market intelligence, and demand evidence",
+        "Process design, constraints, quality, and operations",
+        "Accounting, unit economics, cash, and capital allocation",
+        "Organization design, incentives, decision rights, and coordination",
+        "Product and service development as evidence-producing practice",
+        "Data, automation, AI, controls, and information governance",
+        "Risk, compliance, resilience, and stakeholder obligations",
+        "Learning loops, portfolio review, and adaptive strategy"
+      ]
+    }
+  },
+  "authorityWithheld": [
+    "no notebook source mutation or generation",
+    "no OAuth use beyond verified channel-local custody",
+    "no provider standing grant",
+    "no research purchase",
+    "no generation, upload, schedule, publication, or Course designation",
+    "no federation dispatch or channel-ledger write"
+  ],
+  "leaderInputsStillRequired": [
+    "confirm the potential NotebookLM account badge/tier showing the assumed 20/day and 2/day cinematic limits"
+  ],
+  "proposedOn": "2026-07-21"
+}

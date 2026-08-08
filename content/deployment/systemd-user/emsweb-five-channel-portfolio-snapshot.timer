@@ -1,0 +1,11 @@
+[Unit]
+Description=Close the five-channel portfolio books once per America/Chicago civil day
+
+[Timer]
+OnCalendar=*-*-* 23:50:00 America/Chicago
+Persistent=true
+AccuracySec=1s
+Unit=emsweb-five-channel-portfolio-snapshot.service
+
+[Install]
+WantedBy=timers.target

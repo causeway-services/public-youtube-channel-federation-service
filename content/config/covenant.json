@@ -1,0 +1,15 @@
+{
+  "type": "FiveChannelPortfolioCovenant",
+  "version": 2,
+  "timezone": "America/Chicago",
+  "startupBufferDays": 3,
+  "lines": [
+    { "channel": "urn:ame:mathematics-youtube-channel-enterprise", "youtubeChannelId": "UCVk_gd1Tv320tj6ofCTiLMw", "youtubeHandle": "@MathematicsInRelation", "line": "mathematics", "format": "cinematic", "eligibleWeekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "dailyGenerationTarget": 1, "dailyReleaseTarget": 1 },
+    { "channel": "urn:ame:youtube-channel-enterprise", "youtubeChannelId": "UC04l4oe3ZgkgM8H63Pvp9Kg", "youtubeHandle": "@emsenn0", "line": "relational-systems", "format": "explainer", "eligibleWeekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "dailyGenerationTarget": 1, "dailyReleaseTarget": 1 },
+    { "channel": "urn:ame:climate-youtube-channel-enterprise", "youtubeChannelId": "UCiPBlAOQRY4U-SE49UbunxA", "youtubeHandle": "@ClimatePlace-by-Place", "line": "climate-localities", "format": "explainer", "eligibleWeekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "dailyGenerationTarget": 1, "dailyReleaseTarget": 1 },
+    { "channel": "urn:ame:artificial-intelligence-youtube-channel-enterprise", "youtubeChannelId": "UCZY23kFU8ddtPn8mnY9xGaw", "youtubeHandle": "@MachineLearningHistoryFrontier", "line": "artificial-intelligence-history-and-frontiers", "format": "explainer", "eligibleWeekdays": ["Monday", "Wednesday", "Friday"], "dailyGenerationTarget": 1, "dailyReleaseTarget": 1 },
+    { "channel": "urn:ame:modern-business-youtube-channel-enterprise", "youtubeChannelId": "UC79JnGCE1tfUZm2qQwSrleQ", "youtubeHandle": "@ModernBusinessPractices", "line": "modern-business-practice", "format": "explainer", "eligibleWeekdays": ["Tuesday", "Thursday", "Saturday"], "dailyGenerationTarget": 1, "dailyReleaseTarget": 1 }
+  ],
+  "cadenceSemantics": "Generation and release are distinct; publication draws FIFO from admitted eligible inventory; a missing act is a deficit only on that line's eligible weekday.",
+  "authorityWithheld": ["channel-credential-custody", "channel-calendar-write", "generation-dispatch", "release-publication", "global-job-queue", "spending-authority"]
+}

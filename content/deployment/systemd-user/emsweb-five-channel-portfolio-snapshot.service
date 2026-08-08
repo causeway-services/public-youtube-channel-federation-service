@@ -1,0 +1,19 @@
+[Unit]
+Description=Authenticate and admit the completed five-channel daily portfolio snapshot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/emsenn/info/lib/emsenn/services/561-group/services/rsc-quiescent/services/emsweb/services/emsweb-video-federation
+ExecStart=/home/emsenn/.config/nvm/versions/node/v24.13.1/bin/node src/daily-snapshot.mjs
+Environment=WITNESS_JOURNAL_RDF_AGENT=http://127.0.0.1:19764/.well-known/agent-card.json
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/emsenn/info/lib/emsenn/services/561-group/services/rsc-quiescent/services/emsweb/services/emsweb-video-federation/data /home/emsenn/info/lib/emsenn/services/561-group/services/rsc-quiescent/services/emsweb/services/emsweb-video-federation/content/runtime/snapshot-locks
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+UMask=0077
+TimeoutStartSec=5min
+

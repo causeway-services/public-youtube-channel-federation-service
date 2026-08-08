@@ -1,0 +1,29 @@
+{
+  "status": "five-durable-agent-processes-enabled-active-and-authenticated",
+  "snapshotAdmission": "granted-for-live-pinned-agent-deliveries",
+  "statusCollectionClient": "implemented-and-verified",
+  "channelStatusSourceOperations": "implemented-and-live-round-trip-verified-through-five-durable-signed-agents",
+  "channelAgentSigningKeys": "five-separate-settlement-private-ed25519-keys-provisioned-mode-0600-with-public-only-jwks",
+  "durableAgentRegistry": "content/config/channel-status-agents.json",
+  "durableAgentIdentityVerification": "five-enabled-active-user-systemd-agents-queried-and-authenticated-after-durable-a2a-coordination-adoption-2026-07-26",
+  "statusCollectionLaw": "ni:///sha-256;vpUWKaqHh2eGQxT_zXSsf_TKvGIddYllXs_cY4UIr8M",
+  "fiveChannelExpansionActualization": {
+    "status": "admitted-production-publication-and-distribution-active",
+    "proposal": "content/proposals/five-channel-expansion.json",
+    "aiPersistentNotebook": "active",
+    "modernBusinessPersistentNotebook": "active",
+    "aiScheduledPublicChannel": "active",
+    "modernBusinessScheduledPublicChannel": "active",
+    "fiveSovereignReleaseDistributionFaces": "active-and-mutually-pinned",
+    "externalNotificationTransport": "withheld-until-contracted",
+    "notebookCapacityTier": "planning-assumption-awaiting-account-ui-confirmation"
+  },
+  "dryWeekVerification": { "status": "passed", "eligibleGenerationUnits": 27, "eligibleReleaseUnits": 27, "offDayWork": 0 },
+  "opportunityFormation": "granted-for-admitted-snapshots",
+  "channelExecution": "withheld",
+  "leaderInputsStillRequired": [
+    "approve the three-day startup buffer target or choose its successor covenant",
+    "approve shared-brand relations without conveying channel authority"
+  ],
+  "neverEvidence": "A portfolio snapshot or opportunity is not a generation, schedule, release, payment, dispatch, or channel decision."
+}

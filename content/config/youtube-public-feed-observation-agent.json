@@ -1,0 +1,8 @@
+{
+  "type": "YouTubePublicFeedObservationProviderBinding",
+  "provider": "urn:ame:youtube-public-channel-feed-observation-cell",
+  "agentUrl": "https://bare-cedar-fog.561.group/a2a/youtube-public-feed-observation/.well-known/agent-card.json",
+  "expectedAgentCardIdentity": "ni:///sha-256;Wm0oqSuO9aQ0O7NNIXmobtrSZl0KzPlurYgcTrehALA",
+  "operation": "observe-youtube-public-channel-feed",
+  "authorityWithheld": ["youtube-credentials", "youtube-private-state", "search", "ranking", "interpretation", "analytics", "publication", "scheduling", "youtube-write"]
+}
