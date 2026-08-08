@@ -1,5 +1,5 @@
 {
-  "name": "@emsweb/emsweb-video-federation",
+  "name": "@causeway-services/public-youtube-channel-federation-service",
   "version": "0.1.2",
   "private": true,
   "type": "module",
