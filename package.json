@@ -12,7 +12,9 @@
     "test": "node --test test/*.test.mjs",
     "verify": "npm run check && npm test",
     "private-draft:check": "node --check src/private-video-draft.mjs && node --check src/private-video-cli.mjs",
-    "private-draft:test": "node --test test/private-video-draft.test.mjs"
+    "private-draft:test": "node --test test/private-video-draft.test.mjs",
+    "private-sidecars:check": "node --check src/private-film-sidecars.mjs && node --check src/private-film-sidecars-cli.mjs",
+    "private-sidecars:test": "node --test test/private-film-sidecars.test.mjs"
   },
   "engines": {
     "node": ">=22.18"
@@ -35,9 +37,11 @@
   ],
   "license": "UNLICENSED",
   "bin": {
-    "receive-youtube-private-film": "./src/private-video-cli.mjs"
+    "receive-youtube-private-film": "./src/private-video-cli.mjs",
+    "finish-youtube-private-film": "./src/private-film-sidecars-cli.mjs"
   },
   "exports": {
-    "./private-film-draft": "./src/private-video-draft.mjs"
+    "./private-film-draft": "./src/private-video-draft.mjs",
+    "./private-film-sidecars": "./src/private-film-sidecars.mjs"
   }
 }

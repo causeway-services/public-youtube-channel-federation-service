@@ -36,6 +36,35 @@ YOUTUBE_OAUTH_ACCESS_TOKEN='(fresh-ephemeral-token)' \
 
 **Account prerequisites:** YouTube uses OAuth 2.0 on behalf of a channel owner (not an ordinary unconfigured Google service account). The upload operation requests the Google Data API's resumable `videos.insert`, with `status.containsSyntheticMedia=true`, explicit audience designation, and private visibility. API projects and channel scopes may require configuration, audit or verification. It is not possible to claim live channel delivery until the authorized credentials, fully accepted original film, and actual readback exist.
 
+## Attach real timed captions and the original poster after PRIVATE video receiving
+
+The current Public Fiction studio also manufactures a private release package (one exact accepted master.mp4, source frame poster.jpg, independently approved multilingual caption SRT/VTT, transcripts, trailer and HLS). The **same existing Public YouTube service** can finish the already private YouTube video with separately admitted original captions and thumbnail, via src/private-film-sidecars.mjs and src/private-film-sidecars-cli.mjs.
+
+This is an additional video metadata/accessibility step, not another publishing route. Every operation requires the source-owned release directory and an actual provider-verified PRIVATE YouTube receipt whose final original-film SHA matches the package. Files are independently rehashed against the existing release manifest before any external POST. The owner must authorize the exact consumer, real YouTube channel ID, final film SHA and original source rights; the OAuth principal's current channel ownership and video's *current private status* are independently checked immediately before upload.
+
+~~~sh
+node services/public-youtube-channel-federation-service/src/private-film-sidecars-cli.mjs \
+  inspect film-sidecar-spec.json
+
+YOUTUBE_OAUTH_ACCESS_TOKEN='(ephemeral)' \
+  node services/public-youtube-channel-federation-service/src/private-film-sidecars-cli.mjs \
+  start film-sidecar-spec.json /private/film-en-caption.state --approve-sidecar
+
+YOUTUBE_OAUTH_ACCESS_TOKEN='(fresh-ephemeral)' \
+  node services/public-youtube-channel-federation-service/src/private-film-sidecars-cli.mjs \
+  reconcile film-sidecar-spec.json /private/film-en-caption.state
+~~~
+
+The specification includes releaseRoot (the actual existing private release package directory), privateFilmReceipt (the original verified PRIVATE draft receipt, not a fabricated video ID), kind = captions or poster, language when kind = captions, and authorization with consumer, channelId, authorityRef, approvedPrivateSidecar=true, originalFilmSha256, rightsRef, maxQuotaUnits, and thumbnailEligibilityObserved=true **only when requesting a poster**. Content snippets/tokens are not copied into the spec.
+
+**Caption route:** A source SRT must have a corresponding independent translation/source-language review and rights claim. The uploader chooses a stable original-video + language + exact-caption-SHA name, submits timed media as multipart/related via YouTube captions.insert with isDraft=true, and rechecks captions.list for that source-specific language/name. If the insert response is lost, the exclusive 0600 local attempt is retained and the operator uses reconcile to find the provider track WITHOUT replaying the possibly effective POST. The listed remote caption is evidence of a named track, not proof that YouTube retained identical cue bytes or timecodes; source owner may later compare an actual authorized captions.download response. Captions can be processing/failed; readback status is preserved and additional review may be necessary.
+
+**Poster route:** A source-verified JPEG selected from the actual film is uploaded through YouTube thumbnails.set, but only after the owning channel has independently observed eligibility to use a custom thumbnail. Shorts thumbnails are a conditional feature in 2026 and must not be inferred from YouTube account ownership. A successful thumbnail set response names provider image sizes/URLs; YouTube does not cryptographically attest the uploaded image bytes in readback. If the POST reply is ambiguous, the tool does NOT overwrite/re-upload automatically. Account-owning operations must reconcile the current thumbnail in YouTube Studio.
+
+**Quota and source cost:** A new caption operation requires a currently authorized *estimated* ceiling of at least 502 YouTube Data API quota units (initial captions.list 50, caption insertion 400, confirmation captions.list 50, plus owner/video reads); a poster requires at least an estimated 52 units (thumbnails.set around 50 plus reads). These are NOT Google Flow AI-generation credits and not an actual bank debit. Limits/pricing/eligibility can change; the connected channel account is authoritative. Two caption languages are separate authorized operations. No operation here can publish a video, schedule a release, change privacy to public/unlisted, rewrite the original film, translate dialogue, or generate art. Video publication and real reach still require independent publisher controls.
+
+Official source contracts: https://developers.google.com/youtube/v3/docs/captions/insert ; https://developers.google.com/youtube/v3/docs/captions/list ; https://developers.google.com/youtube/v3/docs/thumbnails/set .
+
 ## Science and operational feedback
 
 Reconcile each private draft against **the exact final-film SHA** and producing work, never against a screenshot or plausible title. Compare accepted finished seconds and actual editorial costs with production yields, then independently record public release ID, real channel watch time, completion and next-episode continuation after authorized public distribution. A private video is not public reach and never indicates a sale. Google Flow subscription credits and distinct Gemini Developer API dollars are different cost units; neither determines realized customer profitability without observed conversion and downstream expense.
