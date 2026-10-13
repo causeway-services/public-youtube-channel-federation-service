@@ -10,7 +10,9 @@
     "observe-public-identities": "node src/public-feed-health.mjs",
     "snapshot": "node src/daily-snapshot.mjs",
     "test": "node --test test/*.test.mjs",
-    "verify": "npm run check && npm test"
+    "verify": "npm run check && npm test",
+    "private-draft:check": "node --check src/private-video-draft.mjs && node --check src/private-video-cli.mjs",
+    "private-draft:test": "node --test test/private-video-draft.test.mjs"
   },
   "engines": {
     "node": ">=22.18"
@@ -31,5 +33,11 @@
     "federation",
     "portfolio"
   ],
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "bin": {
+    "receive-youtube-private-film": "./src/private-video-cli.mjs"
+  },
+  "exports": {
+    "./private-film-draft": "./src/private-video-draft.mjs"
+  }
 }
