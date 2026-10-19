@@ -35,7 +35,7 @@ const text = (value, field, max = 15000) => {
 };
 const tags = values => {
   if (!Array.isArray(values) || values.length > 40 ||
-      values.some(value => !nonempty(value) || value.length > 120 || /[<>\\u0000-\\u001f]/u.test(value)))
+      values.some(value => !nonempty(value) || value.length > 120 || /[<>\u0000-\u001f]/u.test(value)))
     throw new TypeError("public media tags must be editorially supplied");
   return Object.freeze([...new Set(values.map(v => v.trim()))]);
 };
