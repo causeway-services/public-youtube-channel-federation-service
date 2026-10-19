@@ -43,5 +43,9 @@
   "exports": {
     "./private-film-draft": "./src/private-video-draft.mjs",
     "./private-film-sidecars": "./src/private-film-sidecars.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/causeway-services/public-youtube-channel-federation-service.git"
   }
 }
