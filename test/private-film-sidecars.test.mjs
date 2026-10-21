@@ -100,7 +100,10 @@ test('only original exact release assets can be proposed for source-owned privat
   assert.equal(captions.captionSource.mediaType,'application/x-subrip');
   assert.match(captions.captionSource.sourceContentNi,/^ni:\/\/\/sha-256;[A-Za-z0-9_-]{43}$/u);
   assert.match(captions.captionSource.formatClaimNi,/^ni:\/\/\/sha-256;[A-Za-z0-9_-]{43}$/u);
-  assert.equal(captions.captionSource.cues,1);
+  assert.equal(captions.captionSource.type,'StandardsCaptionSourceBinding');
+  assert.equal(captions.captionSource.schemaVersion,1);
+  assert.equal(captions.captionSource.formatPredicate,'http://purl.org/dc/terms/format');
+  assert.equal(captions.captionSource.cueCount,1);
   assert.equal(captions.captionSource.firstCueStartTimeMilliseconds,500);
   assert.equal(captions.captionSource.lastCueEndTimeMilliseconds,2000);
   assert.ok(captions.captionSource.maximumCharactersPerSecond>0);
