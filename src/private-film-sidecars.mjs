@@ -196,9 +196,26 @@ export function preparePrivateFilmSidecar({releaseRoot,privateFilmReceipt,
   fingerprint:sha(Buffer.from(JSON.stringify(selection)))});
 }
 async function verifySameFile(plan){
+ const {filePath,fingerprint,...selection}=plan;
+ insist(sha(Buffer.from(JSON.stringify(selection)))===fingerprint,
+  'source-owned sidecar plan changed after preparation');
  const actual=readFileSync(plan.filePath);
  insist(actual.length===plan.assetBytes&&sha(actual)===plan.assetSha256,
   'finished-film sidecar source changed before provider write');
+ if(plan.kind==='captions'){
+  const claimed=plan.captionSource;
+  insist(claimed?.mediaType==='application/x-subrip'&&claimed.cues>0,
+   'caption plan lacks standard-data and SignCell source identity');
+  // Binding the unchanged bytes and MIME should reproduce the exact upstream
+  // source identity even if an outside caller bypassed pure preparation.
+  const media=bindMediaCell(Uint8Array.from(actual),{
+   mediaType:'application/x-subrip',
+   formatPredicate:'http://purl.org/dc/terms/format'
+  });
+  insist(claimed.sourceContentNi===media.resource.address&&
+   claimed.formatClaimNi===signCellAddress(media.formatCell),
+   'caption source-byte or format-cell identity disagrees with actual media');
+ }
  return actual;
 }
 async function verifyPrivateVideo({plan,token,fetch}){
@@ -237,6 +254,7 @@ function captionReceipt(plan,row){
   kind:'captions',status:'PROVIDER_LISTED_DRAFT_BYTES_NOT_ATTESTED',
   channelId:plan.channelId,videoId:plan.videoId,
   assetSha256:plan.assetSha256,language:plan.language,
+  captionSource:plan.captionSource,
   providerTrackId:row.id,
   providerStatus:row.snippet?.status??'unknown',captionName:plan.captionName,
   note:'Provider lists a source-named track, not a cryptographic proof that its text bytes are identical to the uploaded SRT.'});
@@ -281,7 +299,8 @@ export async function startPrivateFilmSidecar({plan,stateFile,token,fetch=global
  }
  const state={type:'YouTubePrivateFilmSidecarAttempt',version:1,
   state:'POST_ATTEMPTED',sourceFingerprint:plan.fingerprint,kind:plan.kind,
-  videoId:plan.videoId,assetSha256:plan.assetSha256,channelId:plan.channelId};
+  videoId:plan.videoId,assetSha256:plan.assetSha256,channelId:plan.channelId,
+  ...(plan.captionSource?{captionSource:plan.captionSource}:{})};
  saveState(path,state,true);
  let response;
  try{
