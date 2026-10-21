@@ -28,7 +28,7 @@
     "@red-cup-engineering/a2a-rmn-task-client-service": "1.1.1",
     "@red-cup-engineering/computer-text-content-engineering-services-section": "0.1.0",
     "@red-cup-engineering/semantic-content-identify-service": "0.2.2",
-    "@red-cup-engineering/signcell": "0.10.0",
+    "@red-cup-engineering/signcell": "0.13.0-dev.0",
     "@red-cup-engineering/witness-journal-rdf-projection-service": "1.1.0",
     "@red-cup-engineering/youtube-public-channel-feed-observation-cell": "0.1.1"
   },
