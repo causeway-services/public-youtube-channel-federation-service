@@ -97,6 +97,13 @@ test('only original exact release assets can be proposed for source-owned privat
   assert.equal(captions.videoId,video);
   assert.equal(captions.quotaUnitEstimate,502);
   assert.match(captions.captionName,/^561-en-[a-f0-9]{16}$/u);
+  assert.equal(captions.captionSource.mediaType,'application/x-subrip');
+  assert.match(captions.captionSource.sourceContentNi,/^ni:\/\/\/sha-256;[A-Za-z0-9_-]{43}$/u);
+  assert.match(captions.captionSource.formatClaimNi,/^ni:\/\/\/sha-256;[A-Za-z0-9_-]{43}$/u);
+  assert.equal(captions.captionSource.cues,1);
+  assert.equal(captions.captionSource.firstCueStartTimeMilliseconds,500);
+  assert.equal(captions.captionSource.lastCueEndTimeMilliseconds,2000);
+  assert.ok(captions.captionSource.maximumCharactersPerSecond>0);
   const poster=preparePrivateFilmSidecar({...args,kind:'poster'});
   assert.equal(poster.quotaUnitEstimate,52);
   assert.equal(poster.assetSha256,f.manifest.assets[1].sha256);
@@ -213,5 +220,53 @@ test('the real command-line inspect emits redacted source identities without tok
   await assert.rejects(()=>runPrivateFilmSidecarsCli([
    'start',sourceFile,join(f.root,'state.json'),'--approve-sidecar'
   ],{env:{},write:()=>{}}),/YOUTUBE_OAUTH_ACCESS_TOKEN/u);
+ }finally{rmSync(f.root,{recursive:true,force:true})}
+});
+/** Rewrite a fixture's accepted asset and its source manifest, not merely
+ * the file: refusal must occur at actual caption-format admission, after
+ * a valid source-hash custody check and before any network effect. */
+function replaceAcceptedSubRip(f,bytes){
+ const payload=Buffer.isBuffer(bytes)?bytes:Buffer.from(bytes,'utf8');
+ const asset=f.manifest.assets.find(row=>row.path==='captions/en.srt');
+ writeFileSync(join(f.root,asset.path),payload);
+ asset.bytes=payload.length;
+ asset.sha256=hash(payload);
+ writeFileSync(join(f.root,'release.json'),JSON.stringify(f.manifest));
+}
+test('actual YouTube caption preparation refuses invalid UTF-8, empty cues, unordered times and fake arrow tokens before POST',()=>{
+ const invalid=[
+  {reason:'invalid UTF-8 bytes',bytes:Buffer.from([0xff,0xfe,0x80,0x2d,0x2d,0x3e,0x20,0x61,0x61,0x61,0x61,0x61,0x61,0x61,0x61,0x61,0x61,0x61,0x61,0x61,0x61,0x61]),pattern:/SubRip captions are invalid/u},
+  {reason:'fake arrow',bytes:'a'.repeat(30)+' --> fake time\n',pattern:/SubRip captions are invalid/u},
+  {reason:'empty timed text',bytes:'1\n00:00:00,000 --> 00:00:02,000\n',pattern:/SubRip cues cannot be empty/u},
+  {reason:'backwards cue',bytes:'1\n00:00:04,000 --> 00:00:01,000\nThis is backwards.\n',pattern:/SubRip captions are invalid/u},
+  {reason:'unordered start times',bytes:'1\n00:00:03,000 --> 00:00:04,000\nLater first.\n\n2\n00:00:01,000 --> 00:00:02,000\nEarlier second.\n',pattern:/ordered by start time/u},
+  {reason:'duplicate cue numbers',bytes:'1\n00:00:00,500 --> 00:00:01,000\nOne.\n\n1\n00:00:01,500 --> 00:00:02,000\nTwo.\n',pattern:/cue numbers must be unique and sequential/u},
+  {reason:'WebVTT masquerades as SRT',bytes:'WEBVTT\n\n00:00:00.500 --> 00:00:02.000\nNot a source-owned SubRip file.\n',pattern:/genuine SubRip/u},
+ ];
+ for(const item of invalid) {
+  const f=fixture();
+  try{
+   replaceAcceptedSubRip(f,item.bytes);
+   assert.throws(()=>preparePrivateFilmSidecar({releaseRoot:f.root,
+    privateFilmReceipt:f.privateFilmReceipt,authorization:f.authorization,
+    kind:'captions',language:'en'}),item.pattern,item.reason);
+  }finally{rmSync(f.root,{recursive:true,force:true})}
+ }
+});
+test('source identical caption attempts give the same SignCell media and format identity',()=>{
+ const f=fixture();
+ try{
+  const args={releaseRoot:f.root,privateFilmReceipt:f.privateFilmReceipt,
+   authorization:f.authorization,kind:'captions',language:'en'};
+  const a=preparePrivateFilmSidecar(args),b=preparePrivateFilmSidecar(args);
+  assert.deepEqual(a.captionSource,b.captionSource);
+  assert.equal(a.fingerprint,b.fingerprint);
+  assert.equal(a.assetSha256,b.assetSha256);
+  const bytes=Buffer.from('1\n00:00:00,500 --> 00:00:02,000\nA different line.\n');
+  replaceAcceptedSubRip(f,bytes);
+  const changed=preparePrivateFilmSidecar(args);
+  assert.notEqual(changed.captionSource.sourceContentNi,a.captionSource.sourceContentNi);
+  assert.notEqual(changed.captionSource.formatClaimNi,a.captionSource.formatClaimNi);
+  assert.notEqual(changed.fingerprint,a.fingerprint);
  }finally{rmSync(f.root,{recursive:true,force:true})}
 });
