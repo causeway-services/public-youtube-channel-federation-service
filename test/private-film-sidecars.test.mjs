@@ -133,11 +133,14 @@ test('private caption receives actual source text through one POST and readback,
   const completed=await startPrivateFilmSidecar({plan,stateFile,token:'owner-token',fetch:p.fetch});
   assert.equal(completed.status,'PROVIDER_LISTED_DRAFT_BYTES_NOT_ATTESTED');
   assert.equal(completed.assetSha256,plan.assetSha256);
+  assert.deepEqual(completed.captionSource,plan.captionSource);
   assert.equal(completed.videoId,video);
   assert.equal(completed.providerTrackId,'provider-caption-one');
   assert.equal(p.state.captionPosts,1);
   const saved=JSON.parse(readFileSync(stateFile,'utf8'));
   assert.equal(saved.state,'PROVIDER_READBACK');
+  assert.deepEqual(saved.captionSource,plan.captionSource);
+  assert.deepEqual(saved.receipt.captionSource,plan.captionSource);
   assert.ok(!JSON.stringify(saved).includes('owner-token'));
   const recovered=await reconcilePrivateFilmSidecar({plan,stateFile,token:'owner-token',fetch:p.fetch});
   assert.equal(recovered.providerTrackId,completed.providerTrackId);
@@ -268,5 +271,21 @@ test('source identical caption attempts give the same SignCell media and format 
   assert.notEqual(changed.captionSource.sourceContentNi,a.captionSource.sourceContentNi);
   assert.notEqual(changed.captionSource.formatClaimNi,a.captionSource.formatClaimNi);
   assert.notEqual(changed.fingerprint,a.fingerprint);
+ }finally{rmSync(f.root,{recursive:true,force:true})}
+});
+
+test('post-preparation caption-plan forgery refuses before any YouTube network call',async()=>{
+ const f=fixture();
+ try{
+  const plan=preparePrivateFilmSidecar({releaseRoot:f.root,
+   privateFilmReceipt:f.privateFilmReceipt,authorization:f.authorization,
+   kind:'captions',language:'en'});
+  const tampered={...plan,captionSource:{...plan.captionSource,mediaType:'text/vtt'}};
+  let calls=0;
+  await assert.rejects(startPrivateFilmSidecar({
+   plan:tampered,stateFile:join(f.root,'forged-caption.state'),token:'token',
+   fetch:()=>{calls++;return Promise.resolve(response({}));}
+  }),/source-owned sidecar plan changed/u);
+  assert.equal(calls,0);
  }finally{rmSync(f.root,{recursive:true,force:true})}
 });
