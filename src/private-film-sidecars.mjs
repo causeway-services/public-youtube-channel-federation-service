@@ -158,10 +158,12 @@ export function preparePrivateFilmSidecar({releaseRoot,privateFilmReceipt,
     subtitleReviewRef:track.reviewRef,rightsRef:track.rightsRef}
   });
   captionSource=Object.freeze({
+   type:'StandardsCaptionSourceBinding',schemaVersion:1,
    mediaType:carried.mediaType,
+   formatPredicate:'http://purl.org/dc/terms/format',
    sourceContentNi:carried.resource.address,
    formatClaimNi:signCellAddress(carried.formatCell),
-   cues:parsed.cues.length,
+   cueCount:parsed.cues.length,
    firstCueStartTimeMilliseconds:parsed.cues[0].start,
    lastCueEndTimeMilliseconds:Math.max(...parsed.cues.map(cue=>cue.end)),
    maximumCharactersPerSecond:Math.max(...parsed.cues.map(cue=>measureSubtitleCue(cue).charactersPerSecond))
@@ -204,7 +206,9 @@ async function verifySameFile(plan){
   'finished-film sidecar source changed before provider write');
  if(plan.kind==='captions'){
   const claimed=plan.captionSource;
-  insist(claimed?.mediaType==='application/x-subrip'&&claimed.cues>0,
+  insist(claimed?.type==='StandardsCaptionSourceBinding'&&claimed.schemaVersion===1&&
+   claimed.mediaType==='application/x-subrip'&&
+   claimed.formatPredicate==='http://purl.org/dc/terms/format'&&claimed.cueCount>0,
    'caption plan lacks standard-data and SignCell source identity');
   // Binding the unchanged bytes and MIME should reproduce the exact upstream
   // source identity even if an outside caller bypassed pure preparation.
