@@ -15,6 +15,9 @@ import {createHash,randomUUID} from 'node:crypto';
 import {readFileSync,realpathSync,statSync,openSync,closeSync,writeFileSync,
  renameSync,rmSync} from 'node:fs';
 import {resolve,join,relative,sep,isAbsolute} from 'node:path';
+import {parseSubtitles,measureSubtitleCue} from '@red-cup-engineering/computer-text-content-engineering-services-section/subtitles';
+import {bindMediaCell} from '@red-cup-engineering/signcell/media-cell';
+import {address as signCellAddress} from '@red-cup-engineering/signcell/cell';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const insist=(yes,msg)=>{if(!yes)throw new TypeError(msg)};
 const text=(v,label,max=2048)=>{
@@ -108,7 +111,7 @@ export function preparePrivateFilmSidecar({releaseRoot,privateFilmReceipt,
   'separate authorized YouTube quota is required for this sidecar');
  if(kind==='poster')insist(authorization.thumbnailEligibilityObserved===true,
   'Shorts custom thumbnail eligibility requires actual channel observation');
- let file,track=null,name=null;
+ let file,track=null,name=null,captionSource=null;
  if(kind==='captions'){
   insist(LANG.test(language),'exact caption language required');
   track=m.subtitleLanguages?.find(x=>x.language===language);
@@ -119,9 +122,52 @@ export function preparePrivateFilmSidecar({releaseRoot,privateFilmReceipt,
   insist(entry.length===1&&entry[0].mimeType==='application/x-subrip',
    'one source-owned reviewed SubRip file is required');
   file=readActualAsset(root,entry[0]);
-  insist(file.bytes.length>20&&file.bytes.length<2_000_000&&
-   file.bytes.toString('utf8').includes('-->'),
-   'YouTube caption upload requires actual nonempty timed text');
+  insist(file.bytes.length>20&&file.bytes.length<2_000_000,
+   'YouTube caption upload requires bounded nonempty timed text');
+  // Computer Text owns standard SRT/WebVTT syntax, not this network writer.
+  // Decode strictly: replacement characters can otherwise obscure actual dialogue.
+  let parsed;
+  try {
+   const utf8=new TextDecoder('utf-8',{fatal:true}).decode(file.bytes);
+   parsed=parseSubtitles(utf8);
+  } catch(error) {
+   throw new TypeError('source-owned SubRip captions are invalid: '+error.message);
+  }
+  insist(parsed.format==='srt'&&parsed.cues.length>0,
+   'source-owned captions must be a genuine SubRip timed-text track');
+  const cueIds=new Set();
+  let lastCueStartTimeMilliseconds=-1;
+  for(const [index,cue] of parsed.cues.entries()) {
+   insist(Number.isSafeInteger(cue.start)&&Number.isSafeInteger(cue.end)&&
+    cue.start>=0&&cue.end>cue.start&&cue.start>=lastCueStartTimeMilliseconds,
+    'SubRip cue timings must be positive and ordered by start time');
+   lastCueStartTimeMilliseconds=cue.start;
+   insist(cue.id===String(index+1)&&!cueIds.has(cue.id),
+    'SubRip cue numbers must be unique and sequential for YouTube upload');
+   cueIds.add(cue.id);
+   insist(cue.lines.length>0&&cue.lines.some(line=>line.trim()!==''),
+    'SubRip cues cannot be empty');
+  }
+  // An exact-byte source is separately content-addressed from its typed
+  // dcterms:format assertion. No rights claim or syntactic parse is proof
+  // that any subtitle words are true or that YouTube retained the bytes.
+  const carried=bindMediaCell(Uint8Array.from(file.bytes),{
+   mediaType:'application/x-subrip',
+   formatPredicate:'http://purl.org/dc/terms/format',
+   source:{releaseManifestSha256:sha(source),assetPath:entry[0].path,
+    subtitleReviewRef:track.reviewRef,rightsRef:track.rightsRef}
+  });
+  captionSource=Object.freeze({
+   type:'StandardsCaptionSourceBinding',schemaVersion:1,
+   mediaType:carried.mediaType,
+   formatPredicate:'http://purl.org/dc/terms/format',
+   sourceContentNi:carried.resource.address,
+   formatClaimNi:signCellAddress(carried.formatCell),
+   cueCount:parsed.cues.length,
+   firstCueStartTimeMilliseconds:parsed.cues[0].start,
+   lastCueEndTimeMilliseconds:Math.max(...parsed.cues.map(cue=>cue.end)),
+   maximumCharactersPerSecond:Math.max(...parsed.cues.map(cue=>measureSubtitleCue(cue).charactersPerSecond))
+  });
   name='561-'+language.replace(/[^a-zA-Z0-9-]/gu,'-').slice(0,30)+'-'+sha(file.bytes).slice(0,16);
   insist(TITLE.test(name),'caption name is not stable');
  }else{
@@ -144,6 +190,7 @@ export function preparePrivateFilmSidecar({releaseRoot,privateFilmReceipt,
   sourceClaimRef:m.source.claims.independentEditorialReview,
   rightsClaimRef:m.source.claims.rightsRef,
   ...(track?{subtitleReviewRef:track.reviewRef}:{}),
+  ...(captionSource?{captionSource}:{}),
   quotaUnitEstimate:units,
   note:'Provider-listed captions/thumbnail do not prove exact uploaded bytes; private video remains private and unmonetized.'
  };
@@ -151,9 +198,28 @@ export function preparePrivateFilmSidecar({releaseRoot,privateFilmReceipt,
   fingerprint:sha(Buffer.from(JSON.stringify(selection)))});
 }
 async function verifySameFile(plan){
+ const {filePath,fingerprint,...selection}=plan;
+ insist(sha(Buffer.from(JSON.stringify(selection)))===fingerprint,
+  'source-owned sidecar plan changed after preparation');
  const actual=readFileSync(plan.filePath);
  insist(actual.length===plan.assetBytes&&sha(actual)===plan.assetSha256,
   'finished-film sidecar source changed before provider write');
+ if(plan.kind==='captions'){
+  const claimed=plan.captionSource;
+  insist(claimed?.type==='StandardsCaptionSourceBinding'&&claimed.schemaVersion===1&&
+   claimed.mediaType==='application/x-subrip'&&
+   claimed.formatPredicate==='http://purl.org/dc/terms/format'&&claimed.cueCount>0,
+   'caption plan lacks standard-data and SignCell source identity');
+  // Binding the unchanged bytes and MIME should reproduce the exact upstream
+  // source identity even if an outside caller bypassed pure preparation.
+  const media=bindMediaCell(Uint8Array.from(actual),{
+   mediaType:'application/x-subrip',
+   formatPredicate:'http://purl.org/dc/terms/format'
+  });
+  insist(claimed.sourceContentNi===media.resource.address&&
+   claimed.formatClaimNi===signCellAddress(media.formatCell),
+   'caption source-byte or format-cell identity disagrees with actual media');
+ }
  return actual;
 }
 async function verifyPrivateVideo({plan,token,fetch}){
@@ -192,6 +258,7 @@ function captionReceipt(plan,row){
   kind:'captions',status:'PROVIDER_LISTED_DRAFT_BYTES_NOT_ATTESTED',
   channelId:plan.channelId,videoId:plan.videoId,
   assetSha256:plan.assetSha256,language:plan.language,
+  captionSource:plan.captionSource,
   providerTrackId:row.id,
   providerStatus:row.snippet?.status??'unknown',captionName:plan.captionName,
   note:'Provider lists a source-named track, not a cryptographic proof that its text bytes are identical to the uploaded SRT.'});
@@ -236,7 +303,8 @@ export async function startPrivateFilmSidecar({plan,stateFile,token,fetch=global
  }
  const state={type:'YouTubePrivateFilmSidecarAttempt',version:1,
   state:'POST_ATTEMPTED',sourceFingerprint:plan.fingerprint,kind:plan.kind,
-  videoId:plan.videoId,assetSha256:plan.assetSha256,channelId:plan.channelId};
+  videoId:plan.videoId,assetSha256:plan.assetSha256,channelId:plan.channelId,
+  ...(plan.captionSource?{captionSource:plan.captionSource}:{})};
  saveState(path,state,true);
  let response;
  try{
