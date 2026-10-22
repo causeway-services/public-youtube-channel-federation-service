@@ -37,7 +37,7 @@
     "federation",
     "portfolio"
   ],
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "bin": {
     "receive-youtube-private-film": "./src/private-video-cli.mjs",
     "finish-youtube-private-film": "./src/private-film-sidecars-cli.mjs"
@@ -49,5 +49,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/causeway-services/public-youtube-channel-federation-service.git"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/561-group/.github/blob/main/TIPS.md"
   }
 }
